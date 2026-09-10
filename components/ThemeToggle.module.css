@@ -1,0 +1,102 @@
+.themeToggle {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 47;
+  cursor: pointer;
+}
+
+/* 视觉上隐藏，但仍可聚焦与用键盘切换 */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  width: 62px;
+  height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.iconLight,
+.iconDark {
+  z-index: 1;
+  font-size: 0.8rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+/* 浅色下：太阳高亮 */
+.iconLight {
+  color: #d97706;
+}
+
+.iconDark {
+  color: var(--text-muted);
+}
+
+/* 滑块 */
+.knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+/* 勾选（暗色）：滑块移到右侧，月亮高亮 */
+.input:checked + .track .knob {
+  transform: translateX(32px);
+  background: #33415c;
+}
+
+.input:checked + .track .iconLight {
+  color: var(--text-muted);
+}
+
+.input:checked + .track .iconDark {
+  color: #cbd5e1;
+}
+
+.input:focus-visible + .track {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .themeToggle {
+    top: 14px;
+    right: 14px;
+  }
+
+  .track {
+    width: 54px;
+    height: 28px;
+  }
+
+  .knob {
+    width: 22px;
+    height: 22px;
+  }
+
+  .input:checked + .track .knob {
+    transform: translateX(26px);
+  }
+}

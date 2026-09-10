@@ -6,6 +6,9 @@
 # 本地 npm 缓存（当系统缓存目录不可写时使用，见 README）
 /.npm-cache/
 
+# 本地自检产物（无头浏览器截图等）
+/tmp-verify/
+
 # Next.js 构建产物
 /.next/
 /out/

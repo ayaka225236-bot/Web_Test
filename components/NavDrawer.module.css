@@ -1,0 +1,224 @@
+/* ============================================================
+   左上角滑出导航（纯 CSS，无客户端 JS）
+   ------------------------------------------------------------
+   .dock   是覆盖视口左侧一条的透明停靠点，本身不可见；
+   .drawer 是 sticky 的定位标记（图标所在处）；
+   .panel  是滑出的面板。
+   鼠标在 .dock 内越往下，命中的 :hover 层级越深，
+   于是顶部显示完整侧栏、悬停到正文区时缩成小模块。
+   ============================================================ */
+
+.dock {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 46;
+  width: 120px;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* 悬停追踪带：铺满整个高度。
+   它排在 .drawer 之前，所以：
+     - 鼠标在 y < 70px（图标一带）→ 只有 .dock 命中 :hover，图标本身也在这一层，
+       显示完整侧边栏；
+     - 鼠标在 y > 70px（正文区域）→ 本带命中 :hover，比 .dock 更深，
+       于是面板切成小模块。
+   注意不要再用带 pointer-events 的 ::after 覆盖它，否则会永远停在"完整侧栏"档
+   （这是实测踩到的坑）。 */
+.dockHoverDeep {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 30px;
+  height: calc(100vh - 70px);
+  pointer-events: auto;
+}
+
+.drawer {
+  position: sticky;
+  top: 0;
+  padding: 14px 0 0 14px;
+}
+
+/* ---------- 左上角图标 ---------- */
+.trigger {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.trigger:hover {
+  border-color: var(--brand-line);
+  background: var(--brand-soft);
+}
+
+.bars {
+  display: flex;
+  width: 18px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bars span {
+  display: block;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+/* ---------- 滑出面板 ---------- */
+.panel {
+  position: absolute;
+  top: 12px;
+  left: 68px;
+  z-index: 1;
+  width: 236px;
+  padding: var(--sp-4) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-10px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, width 0.2s ease,
+    padding 0.2s ease, visibility 0.2s;
+}
+
+/* 顶部 150px 内悬停 → 完整侧边栏 */
+.dock:hover .panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* 悬停到正文区域（深带，y > 70px）→ 缩成小模块。
+   深带排在图标之后，鼠标在正文区时命中的就是它。 */
+.dockHoverDeep:hover ~ .drawer .panel {
+  width: 172px;
+  padding: var(--sp-3) var(--sp-2);
+}
+
+/* 触摸屏 / 键盘：点击图标或 Tab 聚焦时展开（保持完整侧边栏） */
+.drawer:focus-within .panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ---------- 完整侧边栏内容 ---------- */
+.siteName {
+  margin: 0 0 var(--sp-3);
+  padding: 0 10px var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-body);
+  font-weight: 700;
+}
+
+.group + .group {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.groupTitle {
+  margin: 0 0 var(--sp-2);
+  padding: 0 10px;
+  color: var(--text-muted);
+  font-size: var(--fs-tiny);
+  font-weight: 700;
+  letter-spacing: var(--ls-wide);
+}
+
+.list,
+.miniList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  font-size: var(--fs-small);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.link:hover {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+/* ---------- 小模块内容 ---------- */
+.mini {
+  display: none;
+}
+
+/* 悬停到正文区时，完整内容换成小模块；
+   键盘聚焦展开时保持完整侧边栏，便于浏览。 */
+.dockHoverDeep:hover ~ .drawer .full {
+  display: none;
+}
+
+.dockHoverDeep:hover ~ .drawer .mini {
+  display: block;
+}
+
+.miniLabel {
+  display: inline;
+}
+
+.miniLink {
+  display: flex;
+  padding: 7px 8px;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  font-size: var(--fs-tiny);
+  text-decoration: none;
+}
+
+.miniLink:hover {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+.miniDot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 760px) {
+  .dock {
+    width: 56px;
+  }
+
+  .panel {
+    left: 62px;
+    width: min(236px, calc(100vw - 78px));
+  }
+}

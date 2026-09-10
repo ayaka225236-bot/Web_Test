@@ -1,16 +1,15 @@
 # 静态内容 Wiki 站点
 
 一个基于 **Next.js（App Router）+ TypeScript** 的纯静态 wiki 站点。
-没有后端服务、没有客户端动画，所有页面在构建期生成。
+没有后端服务，所有页面在构建期生成。
 
-- **版式**：维基式四区结构 —— 顶部全局导航 + 左侧条目导航 + 中间正文 + 右侧目录栏。
-- **配色**：蓝白基调，颜色全部集中在 `app/theme.css`。
+- **版式**：单栏通栏内容区 + 左上角滑出导航 + 顶部搜索框。
+- **配色**：蓝白基调，另含深色主题，可一键切换。
 - **内容与实现分离**：文字、图片清单、站点信息、版式参数全部在 `data/`，组件只负责渲染。
+- **几乎不需要客户端 JS**：导航滑出与主题切换都是纯 CSS 实现的。
 
-> 关于版式来源：本次改版参考的是维基类站点的通用桌面版式结构
-> （全局导航 / 局部导航 / 正文 / 右侧目录栏），**没有复制任何外部站点的文字、
-> 图片或代码**，示例文案均为本项目自写的占位内容。原参考站点在本机网络环境下
-> 无法访问，因此若还需对齐其自定义细节，请提供截图。
+> 关于版式来源：设计参考的是维基类站点的通用版式结构，
+> **没有复制任何外部站点的文字、图片或代码**，示例文案均为本项目自写的占位内容。
 
 ---
 
@@ -39,39 +38,63 @@ npm run start        #    以生产模式启动（需先 build）
 
 | 区域 | 组件 | 说明 |
 | --- | --- | --- |
-| 顶部全局导航 | `Header.tsx` | 站点标识、搜索框（占位，暂无功能）、主要条目入口；滚动时吸顶 |
-| 二级条 | `SubHeader.tsx` | 站点名、标语、首页分类标签 |
-| 左栏条目导航 | `WikiSidebar.tsx` | 按 `data/nav.ts` 分组，当前条目高亮（唯一客户端组件） |
-| 中间正文 | `PageView.tsx` + `ArticleHeader.tsx` | 条目页头（标题/分类/更新信息/导语）→ 主图 → 内容块 |
-| 右侧栏 | `WikiRail.tsx` | 本页目录（自动生成）、条目信息、相关条目；吸顶 |
-| 窄屏替代导航 | `MobileNav.tsx` | ≤1000px 时左栏收起，改显示横向条目条（纯服务端组件） |
+| 左上角导航 | `NavDrawer.tsx` | 图标固定在左上角，**鼠标悬停滑出侧边栏**；悬停到正文区域时自动缩成小模块 |
+| 顶部搜索框 | `Header.tsx` | 吸顶，**只有搜索框**（功能尚未实现，见下文） |
+| 主题开关 | `ThemeToggle.tsx` | 右上角，深色 / 浅色切换，纯 CSS |
+| 内容区 | `PageView.tsx` + `ArticleHeader.tsx` | 单栏通栏卡片：页头（标题/分类/维护信息/导语）→ 主图 → 内容块 |
 | 页脚 | `Footer.tsx` | 站点简介、联系方式、链接组 |
 
-**断点**：`>1280px` 三栏 → `≤1280px` 收起右栏 → `≤1000px` 收起左栏、正文单栏。
+### 导航滑出的实现方式（纯 CSS，无 JS）
+
+左上角的抽屉给了一个从视口顶部到底部的透明停靠带（`NavDrawer.module.css` 里的
+`.dock` 与 `.dockHoverDeep`）。鼠标越往下，命中的 `:hover` 层级越深：
+
+- 悬停在**顶部图标一带**（y < 70px）→ 滑出**完整侧边栏**（236px，按组列出全部条目）；
+- 悬停到**正文区域**（y > 70px）→ 收起为**小模块**（172px，紧凑条目列表）。
+
+没有用任何 JavaScript，也没有用 `transition` 之外的动画。
+
+两个已知边界：
+
+- **触摸屏没有 hover**，因此窄屏下改成"聚焦/点击展开"（`:focus-within`）；
+- 那条透明停靠带**永远可点击**，宽度 30px，覆盖页面左侧一条（实测确认过）。
+
+## 主题切换的实现方式（纯 CSS，无 JS）
+
+`ThemeToggle.tsx` 里是一个视觉隐藏的 checkbox，`app/theme-dark.css` 用
+`body:has(#theme-toggle:checked)` 覆盖 CSS 变量，因此：
+
+- 深浅切换**不需要任何客户端脚本**，也就没有"水合前一闪"的问题；
+- 未手动切换时**跟随系统**（`prefers-color-scheme`）。
+
+两个已知边界：
+
+- **选择不会被记住**，刷新后回到"跟随系统"（要持久化需要加 `localStorage`，那就必须引入客户端脚本）；
+- `:has()` 需要较新的浏览器（Chrome/Edge 105+、Safari 15.4+、Firefox 121+）。
+  另外选择器里刻意写的是 **id** 而不是类名 —— `:has()` 内部的 CSS Modules 局部类名
+  编译后不会被改写，会导致选择器匹配不上（这是实测踩到的坑）。
 
 ## 排版要点
 
 排版规则集中在 `app/typography.css`：
 
-- **行高 1.9**：中文正文的行距，由 `data/layout.ts` 的 `lineHeight` 注入；
-- **字间距**：只对拉丁文字与数字使用（`--ls-tight` / `--ls-wide`），
-  **中文不加字间距**，否则会显得松散；
+- **行高 1.9**：中文正文行距，由 `data/layout.ts` 的 `lineHeight` 注入；
+- **字间距**：只对拉丁文字与数字使用（`--ls-tight` / `--ls-wide`），中文不加，否则显得松散；
 - **字号阶梯**：`--fs-h1`（2rem）/ `--fs-h2`（1.375rem）/ `--fs-h3`（1.0625rem）/ 正文 1rem；
-- **小节标题下细分隔线**：维基长条目的视觉分隔；
-- **正文行宽上限** `--prose-width`（860px），避免一行过长影响阅读；
-- **锚点偏移** `scroll-padding-top: 90px`：点击目录跳转时不会被吸顶导航挡住。
+- **正文行宽上限** `--prose-width`（880px），卡片本身通栏（最大 1440px），
+  这样"中间长条"够宽，但长段落仍然好读。
 
 ## 图片位置（四类）
 
 | 位置 | 数据字段 | 尺寸建议 |
 | --- | --- | --- |
-| 条目主图（标题下方） | 页面的 `leadImageId` | 16:9 |
+| 条目主图（页头下方） | 页面的 `leadImageId` | 16:9 |
 | 资料卡图（信息框内） | `infobox` 块的 `imageId` | 4:3 |
 | 正文配图 | `figure` 块 | 16:9，可 `center`/`left`/`right` |
 | 多图图库 | `gallery` 块的 `imageIds` | 8:5，桌面三列 |
 
-**没有真实图片时不会破图**：`public/images/` 下缺文件时，`data/images.ts` 中
-`src` 为空字符串的记录会自动渲染一张带文件路径提示的占位图，方便直接替换。
+**没有真实图片时不会破图**：`data/images.ts` 中 `src` 为空字符串的记录会自动渲染
+一张带文件路径提示的占位图，方便直接替换。
 
 替换步骤：把图片放进 `public/images/` → 在 `data/images.ts` 对应记录填
 `src: "/images/文件名.png"` → 完成。组件无需改动。
@@ -83,10 +106,11 @@ npm run start        #    以生产模式启动（需先 build）
 ```
 .
 ├── app/
-│   ├── theme.css             # ★ 颜色、字号、间距、圆角变量（蓝白配色在这）
-│   ├── typography.css        # ★ 排版规则：标题层级、行高、字间距
+│   ├── theme.css             # ★ 浅色主题变量：颜色、字号、间距、圆角
+│   ├── theme-dark.css        # ★ 深色主题变量（覆盖层）
+│   ├── typography.css        # ★ 排版：标题层级、行高、字间距
 │   ├── globals.css           # 基础重置
-│   ├── wiki.css              # 维基版式与断点
+│   ├── wiki.css              # 页面基础
 │   ├── layout.tsx            # 全站布局 + 注入版式变量
 │   ├── page.tsx              # 首页
 │   ├── not-found.tsx         # 404
@@ -94,16 +118,13 @@ npm run start        #    以生产模式启动（需先 build）
 │
 ├── components/
 │   ├── Shell.tsx             # 外壳 + 跳到正文链接
-│   ├── Header.tsx            # 顶部全局导航
-│   ├── SubHeader.tsx         # 二级条
-│   ├── WikiSidebar.tsx       # 左栏条目导航
-│   ├── NavLink.tsx           # 导航条目（客户端：当前页高亮）
-│   ├── MobileNav.tsx         # 窄屏横向条目条
-│   ├── PageView.tsx          # 三栏版式装配
+│   ├── NavDrawer.tsx         # 左上角滑出导航（纯 CSS 两档）
+│   ├── ThemeToggle.tsx       # 深浅主题开关（纯 CSS）
+│   ├── Header.tsx            # 顶栏：只有搜索框
+│   ├── PageView.tsx          # 内容区装配
 │   ├── ArticleHeader.tsx     # 条目页头
 │   ├── LeadImage.tsx         # 条目主图位
 │   ├── MediaFrame.tsx        # 图片统一容器（占位图回退）
-│   ├── WikiRail.tsx          # 右侧目录栏
 │   ├── Footer.tsx            # 页脚
 │   └── blocks/               # 内容块组件
 │       ├── renderBlock.tsx   # 块 → 组件分发表
@@ -120,13 +141,16 @@ npm run start        #    以生产模式启动（需先 build）
 │   ├── site.ts               # 站点信息、页脚链接、搜索框占位文字
 │   ├── pages.ts              # 各条目文字与内容块
 │   ├── images.ts             # 图片登记表（id / src / alt / caption）
-│   ├── nav.ts                # 左栏分组顺序
-│   ├── layout.ts             # ★ 三栏宽度、间距、行高、正文行宽
+│   ├── nav.ts                # 导航分组顺序
+│   ├── layout.ts             # ★ 内容宽度、正文行宽、行高
 │   └── types.ts              # 类型定义
 │
 ├── lib/
 │   ├── images.ts             # 图片查找 + 占位图生成
-│   └── toc.ts                # 从内容块生成右侧目录锚点
+│   └── toc.ts                # 小节锚点生成
+│
+├── scripts/
+│   └── verify-ui.mjs         # 本地自检脚本（无头浏览器 + CDP），不参与构建
 │
 └── public/images/            # 图片资源
 ```
@@ -148,22 +172,22 @@ npm run start        #    以生产模式启动（需先 build）
 {
   slug: "/services",          // 访问路径
   title: "示例条目",           // 浏览器标题 + 页头大标题
-  navLabel: "示例条目",        // 左栏导航文字
+  navLabel: "示例条目",        // 导航里的文字
   description: "…",           // SEO / 分享卡片描述
-  showInNav: true,            // 是否进顶部导航
+  showInNav: true,            // 是否进导航
   order: 2,                   // 组内排序
-  group: "内容",               // 左栏分组（见 data/nav.ts）
-  categories: ["示例"],        // 页头分类标签 + 右栏信息
-  updatedAt: "2026-02-11",    // 页头与右栏显示
+  group: "内容",               // 导航分组（见 data/nav.ts）
+  categories: ["示例"],        // 页头分类标签
+  updatedAt: "2026-02-11",    // 页头显示
   maintainers: ["ayaka"],     // 维护者
   intro: "…",                 // 标题下方导语
   leadImageId: "lead-overview", // 条目主图（可选）
-  seeAlso: [{ label: "相关条目", href: "/gallery" }], // 右栏相关条目
+  seeAlso: [{ label: "相关条目", href: "/gallery" }],
   blocks: [ /* 内容块 */ ],
 }
 ```
 
-**新增条目**：追加一条记录即可，导航、路由、右栏目录都会自动生效，不需要建文件。
+**新增条目**：追加一条记录即可，导航与路由自动生效，不需要建文件。
 
 ### 内容块类型
 
@@ -181,62 +205,83 @@ npm run start        #    以生产模式启动（需先 build）
 | `quote` | 引用语 | `text`、`attribution` |
 | `cta` | 行动号召 | `title`、`actions` |
 
-带 `title` 的块会自动进入右侧目录；`infobox` 建议放在 `blocks` 第一位，
-否则右浮动绕排效果不对。
+`infobox` 建议放在 `blocks` 第一位，否则右浮动绕排效果不对。
 
 ### 改版式与配色
 
-- **配色**：`app/theme.css` 的 `--brand` / `--bg` / `--border` 等；
-- **栏宽与行高**：`data/layout.ts`（会注入成 CSS 变量）；
-- **字号字距**：`app/theme.css` 的 `--fs-*` / `--ls-*`；
-- **断点**：`app/wiki.css` 与各组件的 `.module.css`。
+- **浅色配色**：`app/theme.css` 的 `--brand` / `--bg` / `--border` 等；
+- **深色配色**：`app/theme-dark.css`（覆盖层，两处都要改才会同步）；
+- **内容宽度 / 行高**：`data/layout.ts`（注入成 CSS 变量）；
+- **导航抽屉宽度与两档行为**：`components/NavDrawer.module.css`；
+- **字号字距**：`app/theme.css` 的 `--fs-*` / `--ls-*`。
+
+---
+
+## 本地自检脚本（可选）
+
+`scripts/verify-ui.mjs` 用无头 Edge 的 DevTools 协议检查版式与交互，
+用于改完样式后确认没有回归。它**不参与构建**，也不影响站点。
+
+```powershell
+# 1. 启动站点
+npm run start
+
+# 2. 启动无头 Edge（带调试端口）
+& "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" `
+  --headless=new --remote-debugging-port=9222 --window-size=1280,1000 `
+  --no-first-run --user-data-dir="$env:TEMP\edge-verify-profile" about:blank
+
+# 3. 跑自检，截图落在 tmp-verify/
+node scripts/verify-ui.mjs
+
+# 4. 收尾
+Stop-Process -Name msedge; Remove-Item tmp-verify -Recurse -Force
+```
 
 ---
 
 ## 前端还差什么
 
-按"投入产出比"排序。前四项建议先做。
+按"投入产出比"排序。
 
 ### 值得优先补的
 
 1. **搜索（最关键）**
-   现在顶部只有一个静态输入框，**输入没有任何反应**。
-   纯静态可行方案：构建期生成索引（如 Pagefind 这类工具），前端只做本地检索，
-   不需要后端。改动点：`Header.tsx` 的 form、新增搜索页、build 流程加一步索引生成。
+   顶部搜索框**输入后没有任何反应**。纯静态可行方案：构建期生成索引
+   （如 Pagefind 这类工具），前端只做本地检索，不需要后端。
+   改动点：`Header.tsx` 的 form、新增搜索页、build 流程加一步索引生成。
 
-2. **移动端左栏交互**
-   现在窄屏是把左栏整体收起、换成横向条目条，**没有抽屉/汉堡菜单**，
-   也没有"当前条目"高亮（`MobileNav` 是纯服务端组件）。
-   要补齐需要一个客户端组件 + 用 `useState` 控制开合（会有少量客户端 JS）。
+2. **主题选择持久化**
+   现在刷新后回到"跟随系统"。要记住选择需要一小段客户端脚本
+   （`localStorage` + 在 `<head>` 里同步设置 `data-theme`，避免水合前闪烁）。
 
 3. **条目级元数据页**
-   维基常见能力：最近更新列表、随机条目、按维护者/分类索引、所有条目一览。
-   数据其实都已在 `data/pages.ts`（`updatedAt` / `maintainers` / `categories`），
-   **不需要新数据，只要新建对应页面**，实现成本低。
+   最近更新、按分类/维护者索引、全部条目一览。数据都已在 `data/pages.ts`
+   （`updatedAt` / `maintainers` / `categories`），**不需要新数据，只要新建页面**。
 
 4. **交叉链接与反向链接**
-   现在页面之间靠手写 `href`。维基需要"哪些页面引用了本页"（backlinks）与断链检查。
-   做法：加一个构建前的扫描脚本生成链接关系表；`[[页面名]]` 语法需要自定义解析。
+   现在页面之间靠手写 `href`，没有 backlinks，也没有断链检查。
+   做法：加构建前的扫描脚本生成链接关系表。
 
 ### 体验与一致性
 
-5. **条目历史/版本对比**：需要后端或 git 集成，纯前端做不了。
-6. **表格支持**：wiki 条目常见表格，目前没有对应内容块。
-7. **图片放大查看**：点击配图弹出大图（需少量客户端 JS）。
-8. **暗色模式**：`theme.css` 已按变量组织，加一套 `[data-theme="dark"]` 覆盖即可。
-9. **打印样式**：`typography.css` 里已隐藏导航与侧栏，但正文分页、链接展开还没做。
-10. **搜索高亮与结果摘要**：依赖第 1 项。
+5. **移动端的导航抽屉**：现在靠 `:focus-within`（点图标展开），
+   没有遮罩、没有滑动手势、点击条目后不会自动收起。
+6. **右侧目录已随本次改版移除**：条目较长时想快速跳转，需要重新加回一个
+   悬浮的目录（锚点数据已经通过 `lib/toc.ts` 生成好了）。
+7. **条目历史/版本对比**：需要后端或 git 集成，纯前端做不了。
+8. **表格内容块** · 9. **图片点击放大** · 10. **打印分页优化**（`typography.css` 里已有基础规则）。
+11. **图片优化**：目前是原生 `<img>` + 懒加载；改用 `next/image` 可获得自动尺寸与格式优化，
+   但要放弃静态导出（`output: "export"`）。
 
 ### 工程质量
 
-11. **内容校验脚本**：`npm run check`（`tsc --noEmit`）+ 断链检查，提交前跑一次。
-12. **CI**：PR 上自动 `npm run build`，红了就拦下（需要托管平台配置）。
-13. **无障碍细节**：跳到正文链接、`aria-current` 已有；还缺 ——
-    右栏目录的当前小节高亮、tab 顺序检查、对比度核查。
-14. **语义化标签核查**：左栏分组标题目前用 `h2`，会与正文小节标题重名，
-    建议改成带 `aria-label` 的普通元素。
-15. **图片优化**：现在用原生 `<img>` + 懒加载；若改用 `next/image` 可获得
-    自动尺寸与格式优化，但要放弃静态导出（`output: "export"`）。
+12. **内容校验脚本**：`npm run check`（`tsc --noEmit`）+ 断链检查。
+13. **CI**：PR 上自动 `npm run build`。
+14. **无障碍细节**：跳到正文、`aria-label` 已有；
+    还缺 —— 抽屉的 `aria-expanded` 状态同步、主题开关的状态播报、对比度复核。
+15. **深浅两套配色需要手动同步**：`theme.css` 与 `theme-dark.css` 的变量名重复，
+    建议改用 `light-dark()` 或构建期生成。
 
 ---
 

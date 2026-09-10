@@ -1,62 +1,48 @@
-/**
- * 三栏网格容器。
- * 具体断点规则写在 app/wiki.css（因为要用到 CSS 变量与全局选择器），
- * 这里只负责把三栏排好。
- */
+/* ============================================================
+   单栏通栏内容区
+   ------------------------------------------------------------
+   卡片本身占满可用宽度（"放大中间长条"），
+   只有正文段落限制行宽，避免一行过长影响阅读。
+   ============================================================ */
 
-.body {
-  display: grid;
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: var(--sp-6) var(--sp-6) var(--sp-9);
-  grid-template-columns:
-    var(--sidebar-width)
-    minmax(0, 1fr)
-    var(--rail-width);
-  align-items: start;
-  gap: var(--column-gap);
-}
-
-.sidebar {
-  position: sticky;
-  top: 78px;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
+.main {
+  display: flex;
+  padding: var(--sp-7) clamp(16px, 3.2vw, 56px) var(--sp-9);
+  justify-content: center;
 }
 
 .article {
-  min-width: 0;
-  padding: var(--sp-8) var(--sp-8) var(--sp-9);
+  width: 100%;
+  max-width: 1440px;
+  padding: var(--sp-9) clamp(20px, 4vw, 64px) var(--sp-9);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-soft);
 }
 
-.content {
+.inner {
+  width: 100%;
   max-width: var(--prose-width);
+  margin: 0 auto;
 }
 
-@media (max-width: 1280px) {
-  .body {
-    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-  }
+/* 图片位置可以比正文行宽更宽 */
+.content {
+  display: flow-root;
 }
 
-@media (max-width: 1000px) {
-  .body {
-    grid-template-columns: minmax(0, 1fr);
-    padding: var(--sp-5) var(--sp-5) var(--sp-8);
-    gap: var(--sp-5);
-  }
+/* 图库、卡片网格这类块允许突破正文行宽，用满卡片宽度 */
+.content > :global(*) {
+  max-width: none;
+}
 
-  .sidebar {
-    position: static;
-    max-height: none;
+@media (max-width: 760px) {
+  .main {
+    padding: var(--sp-5) 14px var(--sp-8);
   }
 
   .article {
-    padding: var(--sp-6) var(--sp-5) var(--sp-8);
+    padding: var(--sp-6) var(--sp-5) var(--sp-7);
   }
 }

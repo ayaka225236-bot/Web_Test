@@ -3,6 +3,7 @@ import { Shell } from "@/components/Shell";
 import { layout } from "@/data/layout";
 import { site } from "@/data/site";
 import "./theme.css";
+import "./theme-dark.css";
 import "./typography.css";
 import "./globals.css";
 import "./wiki.css";
@@ -18,13 +19,10 @@ export const metadata: Metadata = {
 
 /**
  * 把 data/layout.ts 的版式参数注入成 CSS 变量，
- * 这样改一个数字就能调整三栏宽度与正文行高，不用碰 CSS。
+ * 这样改一个数字就能调整内容宽度与正文行高，不用碰 CSS。
  */
 const layoutVars = {
   "--content-width": `${layout.contentWidth}px`,
-  "--sidebar-width": `${layout.sidebarWidth}px`,
-  "--rail-width": `${layout.railWidth}px`,
-  "--column-gap": `${layout.columnGap}px`,
   "--prose-width": `${layout.proseWidth}px`,
   "--lh-body": `${layout.lineHeight}`,
 } as React.CSSProperties;

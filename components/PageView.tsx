@@ -1,40 +1,28 @@
-import { MobileNav } from "./MobileNav";
-import { WikiSidebar } from "./WikiSidebar";
-import styles from "./PageView.module.css";
 import type { PageContent } from "@/data/types";
-import { buildToc } from "@/lib/toc";
 import { ArticleHeader } from "./ArticleHeader";
 import { BlockRenderer } from "./blocks/BlockRenderer";
 import { LeadImage } from "./LeadImage";
-import { WikiRail } from "./WikiRail";
+import styles from "./PageView.module.css";
 
 /**
- * 页面视图：维基式三栏结构
- * 左栏条目导航 · 中间正文 · 右栏目录与信息
- * 窄屏时左栏收起，改用顶部的横向条目条。
+ * 页面视图：单栏通栏内容区。
+ * 左右两栏（条目导航 / 目录与信息）已移除：
+ * 导航移到左上角的滑出抽屉（NavDrawer），条目信息并入页头与页脚。
  */
 export function PageView({ page }: { page: PageContent }) {
-  const toc = buildToc(page.blocks);
-
   return (
-    <div className={styles.body}>
-      <MobileNav />
+    <main className={styles.main} id="content">
+      <article className={styles.article}>
+        <div className={styles.inner}>
+          <ArticleHeader page={page} />
 
-      <div className={styles.sidebar}>
-        <WikiSidebar />
-      </div>
+          <LeadImage imageId={page.leadImageId} caption={page.leadImageCaption} />
 
-      <main className={styles.article} id="content">
-        <ArticleHeader page={page} />
-
-        <LeadImage imageId={page.leadImageId} caption={page.leadImageCaption} />
-
-        <div className={styles.content}>
-          <BlockRenderer blocks={page.blocks} />
+          <div className={styles.content}>
+            <BlockRenderer blocks={page.blocks} />
+          </div>
         </div>
-      </main>
-
-      <WikiRail page={page} toc={toc} />
-    </div>
+      </article>
+    </main>
   );
 }

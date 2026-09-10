@@ -1,17 +1,18 @@
 /* 跳到正文：键盘用户按 Tab 才可见 */
 .skipLink {
-  position: absolute;
-  left: -9999px;
-  z-index: 60;
+  position: fixed;
+  top: -100px;
+  left: 0;
+  z-index: 100;
   padding: 10px 16px;
   border-radius: 0 0 var(--radius-md) 0;
   background: var(--brand);
   color: #ffffff;
   font-size: var(--fs-small);
   text-decoration: none;
+  transition: top 0.15s ease;
 }
 
 .skipLink:focus {
-  left: 0;
   top: 0;
 }

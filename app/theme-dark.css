@@ -1,0 +1,57 @@
+/* ============================================================
+   暗色主题变量
+   ------------------------------------------------------------
+   是 theme.css 的覆盖层，只改颜色，不动尺寸与排版。
+   切换方式见 components/ThemeToggle.tsx：
+   隐藏 checkbox + :has(#theme-toggle:checked)，纯 CSS，不需要客户端 JS。
+   ============================================================ */
+
+/* 手动切换：勾选 checkbox 时强制暗色 */
+body:has(#theme-toggle:checked) {
+  --bg: #0b1220;
+  --surface: #131b2c;
+  --surface-soft: #1a2338;
+  --surface-muted: #1f2a41;
+  --border: #26324b;
+  --border-strong: #3a4a68;
+
+  --text: #e8eefb;
+  --text-soft: #b3c0d6;
+  --text-muted: #8494ad;
+
+  --brand: #5b8cff;
+  --brand-strong: #a8c2ff;
+  --brand-soft: #1b2942;
+  --brand-line: #2f4c86;
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}
+
+/* 跟随系统：未手动切换且系统偏好暗色时生效 */
+@media (prefers-color-scheme: dark) {
+  body:not(:has(#theme-toggle:checked)) {
+    --bg: #0b1220;
+    --surface: #131b2c;
+    --surface-soft: #1a2338;
+    --surface-muted: #1f2a41;
+    --border: #26324b;
+    --border-strong: #3a4a68;
+
+    --text: #e8eefb;
+    --text-soft: #b3c0d6;
+    --text-muted: #8494ad;
+
+    --brand: #5b8cff;
+    --brand-strong: #a8c2ff;
+    --brand-soft: #1b2942;
+    --brand-line: #2f4c86;
+
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+    color-scheme: dark;
+  }
+}

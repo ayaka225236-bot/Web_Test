@@ -1,17 +1,22 @@
-import styles from "./Shell.module.css";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
-import { SubHeader } from "./SubHeader";
+import { NavDrawer } from "./NavDrawer";
+import { ThemeToggle } from "./ThemeToggle";
+import styles from "./Shell.module.css";
 
-/** 页面外壳：固定的全局导航 + 二级条 + 内容 + 页脚 */
+/**
+ * 页面外壳：左上角滑出导航 + 右上角主题开关 + 极简顶栏 + 内容 + 页脚。
+ * 原来的二级条（SubHeader）已移除，其信息并入正文页头。
+ */
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <a className={styles.skipLink} href="#content">
         跳到正文
       </a>
+      <NavDrawer />
+      <ThemeToggle />
       <Header />
-      <SubHeader />
       {children}
       <Footer />
     </>
