@@ -236,3 +236,32 @@ export interface SiteConfig {
   /** 页脚右侧备注 */
   footerNote: string;
 }
+
+/** 站点切换列表里的一个页面条目 */
+export interface SiteNavItem {
+  /** 站内路径 */
+  href: string;
+  /** 导航文字 */
+  label: string;
+  /** 分组名，决定在抽屉里归到哪一组 */
+  group?: string;
+  /** 组内排序 */
+  order?: number;
+}
+
+/**
+ * 一个可切换的站点。
+ * 见 data/sites.ts —— 左上角导航的站点切换按这个结构生成。
+ */
+export interface SiteEntry {
+  /** 唯一 id */
+  id: string;
+  /** 站点名称 */
+  name: string;
+  /** 一句话说明 */
+  description?: string;
+  /** 站点主页（切换时点击的目标） */
+  href: string;
+  /** 该站点自己的条目列表 */
+  pages?: SiteNavItem[];
+}

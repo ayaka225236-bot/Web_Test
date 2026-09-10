@@ -7,15 +7,15 @@ import { WikiRail } from "./WikiRail";
 import styles from "./PageView.module.css";
 
 /**
- * 页面视图：单栏通栏卡片，卡片内部左侧正文 + 右侧导航栏。
- * 左上角还有全局的滑出导航（NavDrawer）。
+ * 页面视图：内容卡片与右侧导航栏是**两个独立的块**，
+ * 各自有自己的边框、圆角和底色，不共用一张卡片背景。
  */
 export function PageView({ page }: { page: PageContent }) {
   const toc = buildToc(page.blocks);
 
   return (
     <main className={styles.main} id="content">
-      <div className={styles.card}>
+      <div className={styles.layout}>
         <article className={styles.article}>
           <ArticleHeader page={page} />
 
@@ -26,7 +26,9 @@ export function PageView({ page }: { page: PageContent }) {
           </div>
         </article>
 
-        <WikiRail page={page} toc={toc} />
+        <div className={styles.railBlock}>
+          <WikiRail page={page} toc={toc} />
+        </div>
       </div>
     </main>
   );

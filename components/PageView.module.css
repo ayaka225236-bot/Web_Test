@@ -1,9 +1,8 @@
 /* ============================================================
-   内容卡片：左正文 + 右导航栏
+   内容区：正文卡片 + 独立的右侧导航栏
    ------------------------------------------------------------
-   卡片宽度由 data/layout.ts 的 cardWidth 控制（--card-width）。
-   正文列用 minmax(0, 1fr)，因此**行宽自动适配卡片内剩余空间**，
-   不再有单独的正文宽度上限。
+   两个块各有自己的边框、圆角与底色，**不共用一张卡片背景**。
+   两者加起来的总宽度由 data/layout.ts 的 cardWidth 控制。
    ============================================================ */
 
 .main {
@@ -12,33 +11,45 @@
   justify-content: center;
 }
 
-.card {
+.layout {
   display: grid;
   width: 100%;
   max-width: var(--card-width);
-  /* 让右侧栏贴到卡片右上角时圆角不被切掉 */
-  overflow: hidden;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) var(--rail-width);
+  gap: var(--inner-gap);
+}
+
+/* ---------- 正文卡片 ---------- */
+.article {
+  min-width: 0;
+  padding: var(--sp-8) clamp(20px, 3vw, 40px) var(--sp-9);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-soft);
-  grid-template-columns: minmax(0, 1fr) var(--rail-width);
-  align-items: start;
-}
-
-.article {
-  min-width: 0;
-  padding: var(--sp-8) clamp(20px, 3vw, 40px) var(--sp-9);
 }
 
 .content {
   display: flow-root;
 }
 
-/* ---------- 窄屏：右栏移到正文下方 ---------- */
+/* ---------- 右侧导航栏块 ---------- */
+.railBlock {
+  position: sticky;
+  top: 80px;
+  min-width: 0;
+}
+
+/* ---------- 窄屏：右栏移到正文下方，不再吸附 ---------- */
 @media (max-width: 1000px) {
-  .card {
+  .layout {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .railBlock {
+    position: static;
+    top: auto;
   }
 }
 
@@ -47,11 +58,8 @@
     padding: var(--sp-5) 14px var(--sp-8);
   }
 
-  .card {
-    border-radius: var(--radius-md);
-  }
-
   .article {
     padding: var(--sp-6) var(--sp-5) var(--sp-7);
+    border-radius: var(--radius-md);
   }
 }

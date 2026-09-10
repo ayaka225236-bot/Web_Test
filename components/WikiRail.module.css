@@ -1,28 +1,27 @@
 /* ============================================================
-   卡片右侧导航栏
+   右侧导航栏的内容
    ------------------------------------------------------------
-   宽度由 data/layout.ts 的 railWidth 注入（--rail-width）。
-   桌面端是卡片内的第二列；窄屏时落到正文下方。
+   这里只负责"内容长什么样"；它自己那层块状外观（边框、圆角、
+   底色）由 PageView.module.css 的 .railBlock 提供，
+   因为它与正文卡片是两个独立的块。
    ============================================================ */
 
 .rail {
   display: flex;
-  align-self: stretch;
-  /* 扣掉左右内边距与左侧分隔线，确保不超出卡片列宽 */
-  width: var(--rail-width);
-  padding: var(--sp-8) var(--sp-4) var(--sp-9);
+  width: 100%;
+  padding: var(--sp-4) var(--sp-3);
   flex-direction: column;
-  gap: var(--sp-4);
-  border-left: 1px solid var(--border);
-  background: var(--rail-bg);
-}
-
-.panel {
-  padding: var(--sp-3);
+  gap: var(--sp-5);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-soft);
+}
+
+/* 组与组之间用细分隔线，不再各自套一层边框 */
+.panel + .panel {
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--border);
 }
 
 .panelTitle {
@@ -118,12 +117,9 @@
   text-decoration: underline;
 }
 
-/* ---------- 窄屏：右栏落到正文下方 ---------- */
+/* ---------- 窄屏：列宽交给父级网格 ---------- */
 @media (max-width: 1000px) {
   .rail {
-    width: auto;
-    padding: var(--sp-5) var(--sp-5) var(--sp-7);
-    border-top: 1px solid var(--border);
-    border-left: none;
+    padding: var(--sp-4);
   }
 }

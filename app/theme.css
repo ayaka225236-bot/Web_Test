@@ -11,8 +11,6 @@
   --surface: #ffffff;
   --surface-soft: #f5f8fd;
   --surface-muted: #eaf0f9;
-  /* 卡片内右侧导航栏的底色，比卡片正文略深一点点 */
-  --rail-bg: #fafbfe;
   --border: #e2e8f2;
   --border-strong: #c9d5e6;
 
