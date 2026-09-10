@@ -1,7 +1,7 @@
 /* ============================================================
-   左上角导航抽屉
+   左上角导航抽屉：只列站点，点一下跳转
    ------------------------------------------------------------
-   包裹层 .wrap 只包住"图标 + 面板"这两块，
+   包裹层 .wrap 只包住"图标 + 面板"，
    因此它的悬停区域**不覆盖正文**，正文始终可以正常点击。
    ============================================================ */
 
@@ -55,7 +55,7 @@
   position: absolute;
   top: 12px;
   left: 68px;
-  width: 248px;
+  width: 250px;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -78,79 +78,46 @@
   pointer-events: auto;
 }
 
-/* ---------- 站点切换 ---------- */
-.switcher {
-  padding-bottom: var(--sp-3);
-  margin-bottom: var(--sp-3);
+.panelTitle {
+  margin: 0 0 var(--sp-3);
+  padding: 0 10px var(--sp-3);
   border-bottom: 1px solid var(--border);
-}
-
-.currentSite {
-  margin: 0 0 var(--sp-2);
-  padding: 0 10px;
-  font-size: var(--fs-body);
-  font-weight: 700;
-}
-
-.switchButton {
-  display: flex;
-  width: 100%;
-  padding: 7px 10px;
-  align-items: center;
-  gap: var(--sp-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-soft);
-  color: var(--text-soft);
-  font-family: inherit;
+  color: var(--text-muted);
   font-size: var(--fs-tiny);
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  font-weight: 700;
+  letter-spacing: var(--ls-wide);
 }
 
-.switchButton:hover {
-  border-color: var(--brand-line);
-  background: var(--brand-soft);
-  color: var(--brand-strong);
-}
-
-.switchCount {
-  margin-left: auto;
-  padding: 1px 7px;
-  border-radius: 999px;
-  background: var(--brand-soft);
-  color: var(--brand-strong);
-  font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.caret {
-  font-size: 0.7rem;
-  transition: transform 0.15s ease;
-}
-
-.caretOpen {
-  transform: rotate(180deg);
-}
-
+/* ---------- 站点列表 ---------- */
 .siteList {
-  margin: var(--sp-2) 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.siteList li + li {
+  margin-top: 2px;
+}
+
 .siteLink {
   display: flex;
-  padding: 8px 10px;
+  padding: 9px 10px;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  border-left: 3px solid transparent;
   border-radius: var(--radius-sm);
   text-decoration: none;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .siteLink:hover {
   background: var(--brand-soft);
+}
+
+/* 当前站点：左侧色条 + 更深的文字 */
+.siteLinkCurrent {
+  border-left-color: var(--brand);
+  background: var(--surface-soft);
 }
 
 .siteName {
@@ -163,47 +130,14 @@
   color: var(--brand-strong);
 }
 
+.siteLinkCurrent .siteName {
+  color: var(--brand-strong);
+}
+
 .siteDesc {
   color: var(--text-muted);
   font-size: var(--fs-tiny);
   line-height: 1.5;
-}
-
-/* ---------- 当前站点的条目 ---------- */
-.group + .group {
-  margin-top: var(--sp-4);
-  padding-top: var(--sp-3);
-  border-top: 1px solid var(--border);
-}
-
-.groupTitle {
-  margin: 0 0 var(--sp-2);
-  padding: 0 10px;
-  color: var(--text-muted);
-  font-size: var(--fs-tiny);
-  font-weight: 700;
-  letter-spacing: var(--ls-wide);
-}
-
-.list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.link {
-  display: block;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  color: var(--text-soft);
-  font-size: var(--fs-small);
-  text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.link:hover {
-  background: var(--brand-soft);
-  color: var(--brand-strong);
 }
 
 @media (max-width: 760px) {
@@ -213,6 +147,6 @@
 
   .panel {
     left: 60px;
-    width: min(248px, calc(100vw - 76px));
+    width: min(250px, calc(100vw - 76px));
   }
 }

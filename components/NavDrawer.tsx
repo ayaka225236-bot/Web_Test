@@ -1,58 +1,66 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { currentSiteEntry, otherSites, sites } from "@/data/sites";
+import { defaultSiteId, sites } from "@/data/sites";
 import styles from "./NavDrawer.module.css";
 
 /**
- * 左上角导航抽屉。
+ * 左上角导航抽屉：只做一件事 —— 罗列所有站点，点击即跳转。
  *
  * 交互：
- *   - 鼠标**悬停在图标上**即展开（不需要先点击）；
- *   - 鼠标在图标与面板之间移动时保持展开，可以点击里面的条目；
- *   - 鼠标离开"图标 + 面板"这整块区域才收起；
- *   - 键盘 Tab 聚焦、或点图标，也能展开（触摸屏没有 hover）。
+ *   - 鼠标**移到图标上**就展开（不需要先点击）；
+ *   - 展开后可以在面板里正常移动、点击站点链接；
+ *   - 鼠标离开"图标 + 面板"整块区域后，**延迟一小会儿**才收起。
  *
- * 内容分两层：
- *   - 顶部是**站点切换**：列出 data/sites.ts 里登记的其它站点；
- *   - 下面是**当前站点的条目**，按 group 分组。
+ * 那个延迟是必须的：鼠标从图标移向面板时会短暂离开包裹层，
+ * 如果立刻收起，指针还没到面板上面板就消失了（这正是之前的 bug）。
  */
 export function NavDrawer() {
   const [open, setOpen] = useState(false);
-  const [sitesOpen, setSitesOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const navItems = currentSiteEntry.pages ?? [];
-
-  // 收集当前站点里出现过的分组，保持登记顺序
-  const groups = navItems.reduce<string[]>((acc, item) => {
-    const group = item.group ?? "条目";
-    if (!acc.includes(group)) {
-      acc.push(group);
-    }
-    return acc;
+  // 组件卸载时清掉待执行的关闭定时器
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) {
+        clearTimeout(closeTimer.current);
+      }
+    };
   }, []);
 
-  const itemsOf = (group: string) =>
-    navItems
-      .filter((item) => (item.group ?? "条目") === group)
-      .sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+  const cancelClose = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => {
+      setOpen(false);
+      closeTimer.current = null;
+    }, 160);
+  };
 
   return (
     <div
       className={styles.wrap}
       ref={wrapRef}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => {
-        setOpen(false);
-        setSitesOpen(false);
+      onMouseEnter={() => {
+        cancelClose();
+        setOpen(true);
       }}
-      onFocusCapture={() => setOpen(true)}
+      onMouseLeave={scheduleClose}
+      onFocusCapture={() => {
+        cancelClose();
+        setOpen(true);
+      }}
       onBlurCapture={(event) => {
         if (!wrapRef.current?.contains(event.relatedTarget as Node | null)) {
-          setOpen(false);
-          setSitesOpen(false);
+          scheduleClose();
         }
       }}
     >
@@ -75,66 +83,33 @@ export function NavDrawer() {
         aria-label="站点导航"
         aria-hidden={!open}
       >
-        <div className={styles.switcher}>
-          <p className={styles.currentSite}>{currentSiteEntry.name}</p>
+        <p className={styles.panelTitle}>站点</p>
 
-          <button
-            className={styles.switchButton}
-            type="button"
-            aria-expanded={sitesOpen}
-            onClick={() => setSitesOpen((value) => !value)}
-            tabIndex={open ? 0 : -1}
-          >
-            <span>切换站点</span>
-            <span className={styles.switchCount}>{sites.length}</span>
-            <span
-              className={
-                sitesOpen ? `${styles.caret} ${styles.caretOpen}` : styles.caret
-              }
-              aria-hidden="true"
-            >
-              ▾
-            </span>
-          </button>
+        <ul className={styles.siteList}>
+          {sites.map((entry) => {
+            const isCurrent = entry.id === defaultSiteId;
 
-          {sitesOpen ? (
-            <ul className={styles.siteList}>
-              {otherSites.map((entry) => (
-                <li key={entry.id}>
-                  <Link
-                    className={styles.siteLink}
-                    href={entry.href}
-                    tabIndex={open ? 0 : -1}
-                  >
-                    <span className={styles.siteName}>{entry.name}</span>
-                    {entry.description ? (
-                      <span className={styles.siteDesc}>{entry.description}</span>
-                    ) : null}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-
-        {groups.map((group) => (
-          <div className={styles.group} key={group}>
-            <p className={styles.groupTitle}>{group}</p>
-            <ul className={styles.list}>
-              {itemsOf(group).map((item) => (
-                <li key={item.href}>
-                  <Link
-                    className={styles.link}
-                    href={item.href}
-                    tabIndex={open ? 0 : -1}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+            return (
+              <li key={entry.id}>
+                <Link
+                  className={
+                    isCurrent
+                      ? `${styles.siteLink} ${styles.siteLinkCurrent}`
+                      : styles.siteLink
+                  }
+                  href={entry.href}
+                  tabIndex={open ? 0 : -1}
+                  aria-current={isCurrent ? "true" : undefined}
+                >
+                  <span className={styles.siteName}>{entry.name}</span>
+                  {entry.description ? (
+                    <span className={styles.siteDesc}>{entry.description}</span>
+                  ) : null}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </nav>
     </div>
   );
