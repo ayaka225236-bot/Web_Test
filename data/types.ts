@@ -39,6 +39,8 @@ export interface HeroBlock {
   actions?: CtaLink[];
   /** 引用的图片 id，见 data/images.ts；留空则不显示图片 */
   imageId?: string;
+  /** 覆盖图片说明文字（可选） */
+  caption?: string;
 }
 
 /** 特色 / 服务 / 数据卡片区域 */
@@ -99,6 +101,60 @@ export interface CtaBlock {
   actions?: CtaLink[];
 }
 
+/** 单独插入的一张图片（正文配图的主要方式） */
+export interface FigureBlock {
+  type: "figure";
+  /** 引用的图片 id，见 data/images.ts */
+  imageId: string;
+  /** 覆盖图片登记表里的说明文字（可选） */
+  caption?: string;
+  /** 图片位置："center" 独立一行（默认），"left"/"right" 与文字并排 */
+  align?: "center" | "left" | "right";
+  /** 显示宽度：small≈320px、medium≈480px、full≈正文整宽 */
+  size?: "small" | "medium" | "full";
+}
+
+/** 信息框的单个字段 */
+export interface InfoboxField {
+  label: string;
+  /** 纯文本值 */
+  value?: string;
+  /** 需要跳转的值 */
+  href?: string;
+}
+
+/**
+ * 信息框：维基条目顶部右侧的资料卡。
+ * 用于放主图与关键信息，是"留出图片位置"的主要容器。
+ */
+export interface InfoboxBlock {
+  type: "infobox";
+  /** 卡片标题，通常就是条目名 */
+  title: string;
+  /** 卡片标题下的一行说明 */
+  subtitle?: string;
+  /** 主图，引用 data/images.ts 中的 id */
+  imageId?: string;
+  /** 主图说明文字 */
+  imageCaption?: string;
+  /** 关键信息字段列表 */
+  fields?: InfoboxField[];
+  /** 卡片底部的补充说明 */
+  footnote?: string;
+}
+
+/** 正文小节：带标题的一组段落，标题会自动进入右侧目录 */
+export interface SectionBlock {
+  type: "section";
+  title: string;
+  /** 段落列表 */
+  paragraphs?: string[];
+  /** 需要跳转的条目列表 */
+  links?: CtaLink[];
+  /** 子级内容块（会渲染在小节内部） */
+  blocks?: ContentBlock[];
+}
+
 /** 所有可选的内容块 */
 export type ContentBlock =
   | HeroBlock
@@ -108,7 +164,10 @@ export type ContentBlock =
   | GalleryBlock
   | NoteBlock
   | QuoteBlock
-  | CtaBlock;
+  | CtaBlock
+  | FigureBlock
+  | InfoboxBlock
+  | SectionBlock;
 
 /** 一个页面 = 路径 + 头部导航信息 + 内容块 */
 export interface PageContent {
@@ -124,8 +183,22 @@ export interface PageContent {
   showInNav?: boolean;
   /** 导航排序，数字小的排前面 */
   order?: number;
+  /** 左侧导航栏的分组名，见 data/nav.ts */
+  group?: string;
+  /** 条目头部的分类标签 */
+  categories?: string[];
+  /** 最后更新日期，显示在标题下方 */
+  updatedAt?: string;
+  /** 本页维护者，显示在标题下方 */
+  maintainers?: string[];
   /** 页面标题下方的引导语（可选） */
   intro?: string;
+  /** 条目顶部主图，引用 data/images.ts 中的 id（可选） */
+  leadImageId?: string;
+  /** 主图说明文字 */
+  leadImageCaption?: string;
+  /** "参见"小节：相关条目链接 */
+  seeAlso?: CtaLink[];
   blocks: ContentBlock[];
 }
 
@@ -147,6 +220,8 @@ export interface ImageAsset {
 export interface SiteConfig {
   /** 站点名称 */
   name: string;
+  /** logo 文字方块里显示的短名（1–2 个字最合适） */
+  wordmark: string;
   /** 一句话标语 */
   tagline: string;
   /** 站点简介 */

@@ -1,0 +1,105 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.panel {
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.panelTitle {
+  margin: 0 0 var(--sp-3);
+  padding: 0;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--fs-tiny);
+  font-weight: 700;
+  letter-spacing: var(--ls-wide);
+}
+
+/* ---------- 目录 ---------- */
+.toc {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.tocItem {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 4px 0;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.tocItem + .tocItem {
+  border-top: 1px dashed var(--border);
+}
+
+.tocIndex {
+  flex: none;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tocLink {
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.tocLink:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+/* ---------- 条目信息 ---------- */
+.meta {
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.metaRow {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: var(--fs-tiny);
+  line-height: 1.6;
+}
+
+.metaRow dt {
+  flex: none;
+  width: 3.4em;
+  color: var(--text-muted);
+}
+
+.metaRow dd {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+/* ---------- 相关条目 ---------- */
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding: 4px 0;
+  font-size: var(--fs-small);
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

@@ -1,11 +1,15 @@
 import { Section } from "./Section";
+import { blockAnchor } from "@/lib/toc";
 import type { StatsBlock } from "@/data/types";
 import styles from "./Stats.module.css";
 
 /** 关键数字一行展示 */
-export function Stats({ block }: { block: StatsBlock }) {
+export function Stats({ block, index }: { block: StatsBlock; index?: number }) {
   return (
-    <Section title={block.title}>
+    <Section
+      id={typeof index === "number" ? blockAnchor(block, index) : undefined}
+      title={block.title}
+    >
       <dl className={styles.stats}>
         {block.items.map((item) => (
           <div className={styles.item} key={item.label}>

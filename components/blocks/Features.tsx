@@ -1,14 +1,25 @@
 import { Section } from "./Section";
+import { blockAnchor } from "@/lib/toc";
 import type { FeaturesBlock } from "@/data/types";
 import styles from "./Features.module.css";
 
 /** 卡片网格 / 朴素列表：展示一组条目 */
-export function Features({ block }: { block: FeaturesBlock }) {
+export function Features({
+  block,
+  index,
+}: {
+  block: FeaturesBlock;
+  index?: number;
+}) {
   const columns = block.columns ?? 3;
   const variant = block.variant ?? "card";
 
   return (
-    <Section title={block.title} description={block.description}>
+    <Section
+      id={typeof index === "number" ? blockAnchor(block, index) : undefined}
+      title={block.title}
+      description={block.description}
+    >
       <ul
         className={`${styles.grid} ${variant === "plain" ? styles.plain : ""}`}
         style={{ "--columns": columns } as React.CSSProperties}

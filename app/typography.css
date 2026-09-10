@@ -1,0 +1,139 @@
+/* ============================================================
+   排版规则：标题层级、正文行高与字间距
+   ------------------------------------------------------------
+   中文排版的关键是行高（1.9 左右）和段落间距；字间距只加在
+   拉丁文字与数字上，中文加字间距会显得松散。
+   ============================================================ */
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+p {
+  margin: 0 0 var(--sp-4);
+  line-height: var(--lh-body);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- 标题层级 ---------- */
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--text);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  letter-spacing: var(--ls-tight);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  /* 维基风格：小节标题下有一条细线，用来分隔长条目 */
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+}
+
+h4 {
+  font-size: var(--fs-body);
+}
+
+/* ---------- 列表 ---------- */
+ul,
+ol {
+  margin: 0 0 var(--sp-4);
+  padding-left: 1.4em;
+  line-height: var(--lh-body);
+}
+
+li + li {
+  margin-top: var(--sp-1);
+}
+
+/* ---------- 链接 ---------- */
+a {
+  color: var(--brand);
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--brand-strong);
+}
+
+/* ---------- 引用与代码 ---------- */
+blockquote {
+  margin: 0 0 var(--sp-5);
+  padding: var(--sp-2) 0 var(--sp-2) var(--sp-5);
+  border-left: 3px solid var(--brand-line);
+  color: var(--text-soft);
+}
+
+code {
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  letter-spacing: 0;
+}
+
+/* ---------- 图片 ---------- */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0;
+}
+
+/* ---------- 焦点可见性 ---------- */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--brand-soft);
+}
+
+/* ---------- 无障碍：屏幕阅读器专用文本 ---------- */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- 打印：把三栏压成单栏 ---------- */
+@media print {
+  aside,
+  nav,
+  header,
+  footer {
+    display: none !important;
+  }
+}

@@ -1,19 +1,23 @@
 import Link from "next/link";
+import { blockAnchor } from "@/lib/toc";
 import type { CtaBlock } from "@/data/types";
 import styles from "./Cta.module.css";
 import shared from "./shared.module.css";
 
 /** 页面底部的行动号召区块 */
-export function Cta({ block }: { block: CtaBlock }) {
+export function Cta({ block, index }: { block: CtaBlock; index?: number }) {
   return (
-    <section className={styles.cta}>
+    <section
+      className={styles.cta}
+      id={typeof index === "number" ? blockAnchor(block, index) : undefined}
+    >
       <h2 className={styles.title}>{block.title}</h2>
       {block.text ? <p className={styles.text}>{block.text}</p> : null}
 
       {block.actions && block.actions.length > 0 ? (
         <div className={shared.actions}>
-          {block.actions.map((action, index) => {
-            const className = index === 0 ? shared.inverted : shared.invertedGhost;
+          {block.actions.map((action, actionIndex) => {
+            const className = actionIndex === 0 ? shared.inverted : shared.invertedGhost;
 
             return action.href.startsWith("http") ? (
               <a

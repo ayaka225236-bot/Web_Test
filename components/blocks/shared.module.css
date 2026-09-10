@@ -1,18 +1,18 @@
-/* 跨内容块复用的按钮样式（CSS Modules 也支持 composes） */
+/* 跨内容块复用的按钮与图片样式 */
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 
 .button {
   display: inline-flex;
+  padding: 11px 22px;
   align-items: center;
   justify-content: center;
-  padding: 11px 22px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
@@ -63,7 +63,7 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
-/* 图片占位背景：真实图片加载前 / 缺失时也不至于出现空洞 */
+/* 图片容器底色：真实图片加载前不至于出现空洞 */
 .imagePlaceholder {
-  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  background: linear-gradient(135deg, #e3eaf6, #cdd9ea);
 }

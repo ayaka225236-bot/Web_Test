@@ -1,0 +1,21 @@
+.paragraphs {
+  max-width: var(--prose-width);
+}
+
+/* 小节内嵌的子块之间留出间距 */
+.nested {
+  margin-top: var(--sp-5);
+  display: flow-root;
+}
+
+/* 内嵌块自己带下边距时不要再叠加 */
+.nested > *:last-child {
+  margin-bottom: 0;
+}
+
+.links {
+  margin: 0 0 var(--sp-4);
+  padding-left: 1.3em;
+  max-width: var(--prose-width);
+  font-size: var(--fs-small);
+}

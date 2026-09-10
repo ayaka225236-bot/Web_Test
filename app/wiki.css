@@ -1,0 +1,141 @@
+/* ============================================================
+   维基式版式：顶部全局导航 + 左栏条目导航 + 中间正文 + 右栏目录
+   ------------------------------------------------------------
+   三栏宽度由 data/layout.ts 注入的 CSS 变量控制。
+   窄屏替代左栏的横向条目条见 components/MobileNav.module.css。
+   ============================================================ */
+
+.wiki {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ---------- 跳到主内容（键盘用户） ---------- */
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  z-index: calc(var(--z-header) + 1);
+  padding: 10px 16px;
+  border-radius: 0 0 var(--radius-md) 0;
+  background: var(--brand);
+  color: #ffffff;
+  font-size: var(--fs-small);
+  text-decoration: none;
+}
+
+.skipLink:focus {
+  left: 0;
+  top: 0;
+}
+
+/* ---------- 导航栏下方的二级条 ---------- */
+.subHeader {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.subInner {
+  display: flex;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--sp-3) var(--sp-6);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-small);
+}
+
+.subTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-3);
+  color: var(--text-soft);
+}
+
+.subTitle strong {
+  color: var(--text);
+  font-size: var(--fs-body);
+}
+
+.subTitle em {
+  color: var(--text-muted);
+  font-style: normal;
+}
+
+.subStats {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text-muted);
+}
+
+.subStats b {
+  color: var(--brand);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 三栏主区域 ---------- */
+.body {
+  display: grid;
+  max-width: var(--content-width);
+  min-height: 60vh;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-6) var(--sp-9);
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--rail-width);
+  align-items: start;
+  gap: var(--column-gap);
+}
+
+.sidebar {
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.article {
+  min-width: 0;
+  padding: var(--sp-8) var(--sp-8) var(--sp-9);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.rail {
+  position: sticky;
+  top: 76px;
+  align-self: start;
+}
+
+/* ---------- 窄屏：先收起右栏，再收起左栏 ---------- */
+@media (max-width: 1280px) {
+  .body {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+
+  .rail {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--sp-5) var(--sp-5) var(--sp-8);
+    gap: var(--sp-5);
+  }
+
+  .sidebar {
+    position: static;
+    max-height: none;
+    display: none; /* 改成顶部横向条目条，见下 */
+  }
+
+  .article {
+    padding: var(--sp-6) var(--sp-5) var(--sp-8);
+  }
+}

@@ -1,0 +1,72 @@
+/* ============================================================
+   主题变量：颜色 + 字号 + 间距 + 圆角
+   ------------------------------------------------------------
+   配色保持蓝白基调，想换主题只改这一个文件。
+   ============================================================ */
+
+:root {
+  /* ---------- 颜色：蓝白基调 ---------- */
+  --bg: #f2f5fa;
+  --surface: #ffffff;
+  --surface-soft: #f5f8fd;
+  --surface-muted: #eaf0f9;
+  --border: #e2e8f2;
+  --border-strong: #c9d5e6;
+
+  --text: #0f172a;
+  --text-soft: #46536b;
+  --text-muted: #7d8ba3;
+
+  --brand: #1d4ed8;
+  --brand-strong: #1e3a8a;
+  --brand-soft: #e8eefc;
+  --brand-line: #c3d3f7;
+
+  /* ---------- 字体 ---------- */
+  --font-sans: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei",
+    "Hiragino Sans GB", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New",
+    monospace;
+
+  /* ---------- 字号阶梯 ---------- */
+  --fs-body: 16px;
+  --fs-lead: 1.0625rem; /* 导语 / 摘要 */
+  --fs-h1: 2rem;
+  --fs-h2: 1.375rem;
+  --fs-h3: 1.0625rem;
+  --fs-small: 0.875rem;
+  --fs-tiny: 0.8125rem;
+
+  /* ---------- 字间距（只用于拉丁文字与数字，中文不加间距） ---------- */
+  --ls-tight: -0.015em;
+  --ls-wide: 0.06em;
+
+  /* ---------- 行高 ---------- */
+  --lh-heading: 1.4;
+  --lh-body: 1.9; /* 由 data/layout.ts 的 lineHeight 覆盖 */
+
+  /* ---------- 间距阶梯 ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 56px;
+
+  /* ---------- 圆角与阴影 ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* ---------- 层级 ---------- */
+  --z-header: 30;
+  --z-panel: 10;
+
+  color-scheme: light;
+}

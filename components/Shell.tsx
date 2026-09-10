@@ -1,15 +1,19 @@
-import type { ReactNode } from "react";
+import styles from "./Shell.module.css";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
-import styles from "./Shell.module.css";
+import { SubHeader } from "./SubHeader";
 
-/** 页面外壳：统一的页头 + 主内容区 + 页脚 */
-export function Shell({ children }: { children: ReactNode }) {
+/** 页面外壳：固定的全局导航 + 二级条 + 内容 + 页脚 */
+export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className={styles.shell}>
+    <>
+      <a className={styles.skipLink} href="#content">
+        跳到正文
+      </a>
       <Header />
-      <main className={styles.main}>{children}</main>
+      <SubHeader />
+      {children}
       <Footer />
-    </div>
+    </>
   );
 }

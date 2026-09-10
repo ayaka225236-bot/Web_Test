@@ -1,0 +1,74 @@
+.box {
+  float: right;
+  width: 300px;
+  margin: 0 0 var(--sp-6) var(--sp-6);
+  padding: var(--sp-4);
+  border: 1px solid var(--brand-line);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--brand-soft), var(--surface) 60%);
+  box-shadow: var(--shadow-soft);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: 700;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 4px 0 var(--sp-3);
+  color: var(--text-muted);
+  font-size: var(--fs-tiny);
+  text-align: center;
+}
+
+.image {
+  margin-bottom: var(--sp-3);
+}
+
+.fields {
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+  gap: 0;
+}
+
+.row {
+  display: flex;
+  padding: 7px 0;
+  gap: var(--sp-2);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-tiny);
+  line-height: 1.6;
+}
+
+.label {
+  flex: none;
+  width: 5em;
+  color: var(--text-muted);
+}
+
+.value {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-soft);
+  word-break: break-word;
+}
+
+.footnote {
+  margin: var(--sp-3) 0 0;
+  padding-top: var(--sp-2);
+  border-top: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: var(--fs-tiny);
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .box {
+    float: none;
+    width: 100%;
+    margin: 0 0 var(--sp-6);
+  }
+}

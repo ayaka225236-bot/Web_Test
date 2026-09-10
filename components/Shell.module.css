@@ -1,19 +1,17 @@
-.shell {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+/* 跳到正文：键盘用户按 Tab 才可见 */
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  z-index: 60;
+  padding: 10px 16px;
+  border-radius: 0 0 var(--radius-md) 0;
+  background: var(--brand);
+  color: #ffffff;
+  font-size: var(--fs-small);
+  text-decoration: none;
 }
 
-.main {
-  flex: 1;
-  width: 100%;
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 48px 24px 96px;
-}
-
-@media (max-width: 640px) {
-  .main {
-    padding: 32px 16px 64px;
-  }
+.skipLink:focus {
+  left: 0;
+  top: 0;
 }

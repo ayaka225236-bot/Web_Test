@@ -56,15 +56,6 @@ export function getImage(id: string): ImageAsset | undefined {
   return images.find((item) => item.id === id);
 }
 
-/** 按 id 取可用的图片地址（找不到时返回占位图） */
-export function getImageSrc(id: string): string {
-  const asset = getImage(id);
-  if (!asset) {
-    return placeholderImage({ id, src: "", alt: "未登记的图片" });
-  }
-  return asset.src;
-}
-
 /** 按 id 取图片登记信息，找不到时给出兜底对象，避免组件里到处判空 */
 export function getImageOrFallback(id: string): ImageAsset {
   const asset = getImage(id);
@@ -76,4 +67,21 @@ export function getImageOrFallback(id: string): ImageAsset {
     src: `/#missing-image-${id}`,
     alt: `未在 data/images.ts 中登记的图片：${id}`,
   };
+}
+
+/**
+ * 取一张图片最终用于 <img src> 的地址。
+ *
+ * 逻辑：登记的 src 为空（说明还没放真实图片）时返回自动生成的占位图；
+ * 否则直接返回登记的真实图片地址。这样替换图片只需要放文件 + 改 data/images.ts，
+ * 组件一行都不用动。
+ */
+export function getImageSource(id: string): string {
+  const asset = getImageOrFallback(id);
+  return asset.src ? asset.src : placeholderImage(asset);
+}
+
+/** 该图片当前是否还在使用占位图 */
+export function isPlaceholder(id: string): boolean {
+  return !getImageOrFallback(id).src;
 }

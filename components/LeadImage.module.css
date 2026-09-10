@@ -1,0 +1,4 @@
+.lead {
+  max-width: var(--prose-width);
+  margin: 0 0 var(--sp-6);
+}
