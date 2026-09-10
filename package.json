@@ -1,0 +1,29 @@
+{
+  "name": "web-test",
+  "version": "0.1.0",
+  "private": true,
+  "description": "基于 Next.js 的纯静态展示站点：页面由 data/ 目录驱动，无需后端",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.0"
+  },
+  "comment:allowScripts": "npm 12 起默认不执行依赖的安装脚本，这里显式放行必要的包（均有官方原生二进制下载步骤）。若安装时提示某个包缺少权限，把它加进下面的列表即可。",
+  "allowScripts": {
+    "next": true,
+    "sharp": true
+  }
+}

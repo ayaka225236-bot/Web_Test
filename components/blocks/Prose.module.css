@@ -1,0 +1,38 @@
+.tone {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.brand {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+.neutral {
+  background: var(--surface-soft);
+  color: var(--text-muted);
+}
+
+.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.body {
+  max-width: 76ch;
+}
+
+.paragraph {
+  margin: 0 0 16px;
+  color: var(--text-soft);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,29 @@
+.stats {
+  display: grid;
+  margin: 0;
+  padding: 28px 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px 24px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
+.label {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.value {
+  margin: 0;
+  color: var(--brand-strong);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}

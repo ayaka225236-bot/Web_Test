@@ -1,0 +1,69 @@
+/* 跨内容块复用的按钮样式（CSS Modules 也支持 composes） */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 22px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.primary {
+  composes: button;
+  background: var(--brand);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(29, 78, 216, 0.25);
+}
+
+.primary:hover {
+  background: var(--brand-strong);
+}
+
+.secondary {
+  composes: button;
+  border-color: var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.secondary:hover {
+  background: var(--surface-soft);
+}
+
+/* 深色行动号召区块里的浅色按钮 */
+.inverted {
+  composes: button;
+  background: #ffffff;
+  color: var(--brand-strong);
+  box-shadow: 0 10px 24px rgba(8, 20, 60, 0.28);
+}
+
+.invertedGhost {
+  composes: button;
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+}
+
+.invertedGhost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* 图片占位背景：真实图片加载前 / 缺失时也不至于出现空洞 */
+.imagePlaceholder {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+}

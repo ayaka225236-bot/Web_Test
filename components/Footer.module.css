@@ -1,0 +1,31 @@
+.footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.inner {
+  display: flex;
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.copy {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.meta {
+  display: flex;
+  margin: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
