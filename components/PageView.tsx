@@ -1,19 +1,22 @@
 import type { PageContent } from "@/data/types";
+import { buildToc } from "@/lib/toc";
 import { ArticleHeader } from "./ArticleHeader";
 import { BlockRenderer } from "./blocks/BlockRenderer";
 import { LeadImage } from "./LeadImage";
+import { WikiRail } from "./WikiRail";
 import styles from "./PageView.module.css";
 
 /**
- * 页面视图：单栏通栏内容区。
- * 左右两栏（条目导航 / 目录与信息）已移除：
- * 导航移到左上角的滑出抽屉（NavDrawer），条目信息并入页头与页脚。
+ * 页面视图：单栏通栏卡片，卡片内部左侧正文 + 右侧导航栏。
+ * 左上角还有全局的滑出导航（NavDrawer）。
  */
 export function PageView({ page }: { page: PageContent }) {
+  const toc = buildToc(page.blocks);
+
   return (
     <main className={styles.main} id="content">
-      <article className={styles.article}>
-        <div className={styles.inner}>
+      <div className={styles.card}>
+        <article className={styles.article}>
           <ArticleHeader page={page} />
 
           <LeadImage imageId={page.leadImageId} caption={page.leadImageCaption} />
@@ -21,8 +24,10 @@ export function PageView({ page }: { page: PageContent }) {
           <div className={styles.content}>
             <BlockRenderer blocks={page.blocks} />
           </div>
-        </div>
-      </article>
+        </article>
+
+        <WikiRail page={page} toc={toc} />
+      </div>
     </main>
   );
 }

@@ -38,26 +38,37 @@ npm run start        #    以生产模式启动（需先 build）
 
 | 区域 | 组件 | 说明 |
 | --- | --- | --- |
-| 左上角导航 | `NavDrawer.tsx` | 图标固定在左上角，**鼠标悬停滑出侧边栏**；悬停到正文区域时自动缩成小模块 |
+| 左上角导航 | `NavDrawer.tsx` | 图标固定在左上角，**鼠标悬停即滑出侧边栏**；展开时面板覆盖在正文左侧，**不遮挡也不拦截正文点击** |
 | 顶部搜索框 | `Header.tsx` | 吸顶，**只有搜索框**（功能尚未实现，见下文） |
 | 主题开关 | `ThemeToggle.tsx` | 右上角，深色 / 浅色切换，纯 CSS |
-| 内容区 | `PageView.tsx` + `ArticleHeader.tsx` | 单栏通栏卡片：页头（标题/分类/维护信息/导语）→ 主图 → 内容块 |
+| 内容卡片 | `PageView.tsx` | 单栏卡片（最大 `--card-width`），卡片内部左侧正文 + 右侧导航栏 |
+| 卡片右栏 | `WikiRail.tsx` | 本页目录（自动生成）+ 条目信息 + 相关条目；窄屏时落到正文下方 |
 | 页脚 | `Footer.tsx` | 站点简介、联系方式、链接组 |
 
-### 导航滑出的实现方式（纯 CSS，无 JS）
+**宽度参数都在 `data/layout.ts`**（注入成 CSS 变量）：
 
-左上角的抽屉给了一个从视口顶部到底部的透明停靠带（`NavDrawer.module.css` 里的
-`.dock` 与 `.dockHoverDeep`）。鼠标越往下，命中的 `:hover` 层级越深：
+| 参数 | 值 | 说明 |
+| --- | --- | --- |
+| `cardWidth` | 1152 | 内容卡片最大宽度（比上一版的 1440 窄约 20%） |
+| `railWidth` | 224 | 卡片内右侧导航栏宽度 |
+| `innerGap` | 32 | 卡片内两栏间距（预留） |
+| `lineHeight` | 1.9 | 中文正文行高 |
 
-- 悬停在**顶部图标一带**（y < 70px）→ 滑出**完整侧边栏**（236px，按组列出全部条目）；
-- 悬停到**正文区域**（y > 70px）→ 收起为**小模块**（172px，紧凑条目列表）。
+**正文行宽自动适配卡片**：卡片内的正文列用 `minmax(0, 1fr)`，
+`--prose-width` 因此被设为 `100%`，正文铺满卡片左侧剩余宽度，不再有单独的宽度上限。
 
-没有用任何 JavaScript，也没有用 `transition` 之外的动画。
+### 导航抽屉的交互
 
-两个已知边界：
+按要求，左上角图标**不需要先点击**：
 
-- **触摸屏没有 hover**，因此窄屏下改成"聚焦/点击展开"（`:focus-within`）；
-- 那条透明停靠带**永远可点击**，宽度 30px，覆盖页面左侧一条（实测确认过）。
+- 鼠标**悬停到图标上**就展开侧边栏；
+- 鼠标从图标移到侧边栏上**保持展开**，可以点击里面的条目；
+- 鼠标离开"图标 + 面板"这整块区域才收起；
+- 展开期间正文照常可点（面板只占左上角那块，不覆盖正文）；
+- 键盘 Tab 聚焦、或点击图标，也能展开（触摸屏没有 hover）。
+
+这是全站唯一的客户端组件（一个 `useState` 开关）。早先那版用纯 CSS 的透明悬停带实现，
+问题正是那条带子会一直占着页面左侧一条并拦截正文点击，所以改成了 JS 控制。
 
 ## 主题切换的实现方式（纯 CSS，无 JS）
 
@@ -69,7 +80,7 @@ npm run start        #    以生产模式启动（需先 build）
 
 两个已知边界：
 
-- **选择不会被记住**，刷新后回到"跟随系统"（要持久化需要加 `localStorage`，那就必须引入客户端脚本）；
+- **选择不会被记住**，刷新后回到"跟随系统"（要持久化需要加 `localStorage`）；
 - `:has()` 需要较新的浏览器（Chrome/Edge 105+、Safari 15.4+、Firefox 121+）。
   另外选择器里刻意写的是 **id** 而不是类名 —— `:has()` 内部的 CSS Modules 局部类名
   编译后不会被改写，会导致选择器匹配不上（这是实测踩到的坑）。
@@ -118,10 +129,11 @@ npm run start        #    以生产模式启动（需先 build）
 │
 ├── components/
 │   ├── Shell.tsx             # 外壳 + 跳到正文链接
-│   ├── NavDrawer.tsx         # 左上角滑出导航（纯 CSS 两档）
+│   ├── NavDrawer.tsx         # 左上角悬停滑出导航（唯一的客户端组件）
 │   ├── ThemeToggle.tsx       # 深浅主题开关（纯 CSS）
 │   ├── Header.tsx            # 顶栏：只有搜索框
-│   ├── PageView.tsx          # 内容区装配
+│   ├── PageView.tsx          # 卡片装配：左正文 + 右导航栏
+│   ├── WikiRail.tsx          # 卡片右侧导航栏（目录/条目信息/相关条目）
 │   ├── ArticleHeader.tsx     # 条目页头
 │   ├── LeadImage.tsx         # 条目主图位
 │   ├── MediaFrame.tsx        # 图片统一容器（占位图回退）
@@ -142,7 +154,7 @@ npm run start        #    以生产模式启动（需先 build）
 │   ├── pages.ts              # 各条目文字与内容块
 │   ├── images.ts             # 图片登记表（id / src / alt / caption）
 │   ├── nav.ts                # 导航分组顺序
-│   ├── layout.ts             # ★ 内容宽度、正文行宽、行高
+│   ├── layout.ts             # ★ 卡片宽度、右栏宽度、行高
 │   └── types.ts              # 类型定义
 │
 ├── lib/
@@ -219,24 +231,28 @@ npm run start        #    以生产模式启动（需先 build）
 
 ## 本地自检脚本（可选）
 
-`scripts/verify-ui.mjs` 用无头 Edge 的 DevTools 协议检查版式与交互，
-用于改完样式后确认没有回归。它**不参与构建**，也不影响站点。
+`scripts/verify-ui.ps1` 用无头 Edge 给主要页面截图，方便改完样式后快速核对版式。
+它**不参与构建**，也不影响站点。
 
 ```powershell
-# 1. 启动站点
+# 1. 先让站点跑起来（生产模式）
+npm run build
 npm run start
 
-# 2. 启动无头 Edge（带调试端口）
-& "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" `
-  --headless=new --remote-debugging-port=9222 --window-size=1280,1000 `
-  --no-first-run --user-data-dir="$env:TEMP\edge-verify-profile" about:blank
-
-# 3. 跑自检，截图落在 tmp-verify/
-node scripts/verify-ui.mjs
-
-# 4. 收尾
-Stop-Process -Name msedge; Remove-Item tmp-verify -Recurse -Force
+# 2. 截图，产物在 tmp-verify/（已被 git 忽略）
+& scripts\verify-ui.ps1
 ```
+
+两个环境上的注意点（都踩过）：
+
+- **无头 Edge 需要进程隔离能力**，`workspace-write` 沙箱下会被拒绝
+  （`mojo platform_channel: access denied 0x5`），浏览器会在渲染前就退出。
+  要么在 `danger-full-access` 的会话里跑，要么手动跑一次并把截图给我看；
+- 脚本里特意用**纯 ASCII** 写注释：Windows PowerShell 5.1 按系统 ANSI 码页读取 `.ps1`，
+  文件里出现中文会导致解析报错。
+
+**自动截图测不了的东西**：悬停、点击这类交互（那需要 DevTools 协议驱动鼠标事件），
+所以抽屉的悬停展开、主题开关这些最好你自己在浏览器里点一遍确认。
 
 ---
 
@@ -265,10 +281,10 @@ Stop-Process -Name msedge; Remove-Item tmp-verify -Recurse -Force
 
 ### 体验与一致性
 
-5. **移动端的导航抽屉**：现在靠 `:focus-within`（点图标展开），
-   没有遮罩、没有滑动手势、点击条目后不会自动收起。
-6. **右侧目录已随本次改版移除**：条目较长时想快速跳转，需要重新加回一个
-   悬浮的目录（锚点数据已经通过 `lib/toc.ts` 生成好了）。
+5. **移动端的导航抽屉**：现在靠悬停/聚焦展开，没有遮罩、没有滑动手势，
+   点击条目后不会自动收起（桌面端鼠标移开就会收）。
+6. **右栏在窄屏会落到正文下方**，而不是变成折叠面板；条目很长时目录随卡片一起滚动，
+   没有做吸附跟随。
 7. **条目历史/版本对比**：需要后端或 git 集成，纯前端做不了。
 8. **表格内容块** · 9. **图片点击放大** · 10. **打印分页优化**（`typography.css` 里已有基础规则）。
 11. **图片优化**：目前是原生 `<img>` + 懒加载；改用 `next/image` 可获得自动尺寸与格式优化，
@@ -278,10 +294,12 @@ Stop-Process -Name msedge; Remove-Item tmp-verify -Recurse -Force
 
 12. **内容校验脚本**：`npm run check`（`tsc --noEmit`）+ 断链检查。
 13. **CI**：PR 上自动 `npm run build`。
-14. **无障碍细节**：跳到正文、`aria-label` 已有；
-    还缺 —— 抽屉的 `aria-expanded` 状态同步、主题开关的状态播报、对比度复核。
+14. **无障碍细节**：跳到正文、`aria-label`、`aria-expanded` 已有；
+    还缺 —— 主题开关的状态播报、抽屉打开时的焦点管理（目前不锁焦点）、对比度复核。
 15. **深浅两套配色需要手动同步**：`theme.css` 与 `theme-dark.css` 的变量名重复，
     建议改用 `light-dark()` 或构建期生成。
+16. **交互无法自动截图验证**：悬停、点击需要 DevTools 协议驱动鼠标事件，
+    当前自检脚本只做静态截图（见上文）。
 
 ---
 

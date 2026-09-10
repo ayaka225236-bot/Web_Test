@@ -1,0 +1,129 @@
+/* ============================================================
+   卡片右侧导航栏
+   ------------------------------------------------------------
+   宽度由 data/layout.ts 的 railWidth 注入（--rail-width）。
+   桌面端是卡片内的第二列；窄屏时落到正文下方。
+   ============================================================ */
+
+.rail {
+  display: flex;
+  align-self: stretch;
+  /* 扣掉左右内边距与左侧分隔线，确保不超出卡片列宽 */
+  width: var(--rail-width);
+  padding: var(--sp-8) var(--sp-4) var(--sp-9);
+  flex-direction: column;
+  gap: var(--sp-4);
+  border-left: 1px solid var(--border);
+  background: var(--rail-bg);
+}
+
+.panel {
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.panelTitle {
+  margin: 0 0 var(--sp-3);
+  padding: 0;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--fs-tiny);
+  font-weight: 700;
+  letter-spacing: var(--ls-wide);
+}
+
+/* ---------- 目录 ---------- */
+.toc {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tocItem {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 5px 0;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.tocItem + .tocItem {
+  border-top: 1px dashed var(--border);
+}
+
+.tocIndex {
+  flex: none;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tocLink {
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.tocLink:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+/* ---------- 条目信息 ---------- */
+.meta {
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.metaRow {
+  display: flex;
+  gap: var(--sp-2);
+  font-size: var(--fs-tiny);
+  line-height: 1.6;
+}
+
+.metaRow dt {
+  flex: none;
+  width: 3.2em;
+  color: var(--text-muted);
+}
+
+.metaRow dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-soft);
+  word-break: break-word;
+}
+
+/* ---------- 相关条目 ---------- */
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding: 4px 0;
+  font-size: var(--fs-small);
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- 窄屏：右栏落到正文下方 ---------- */
+@media (max-width: 1000px) {
+  .rail {
+    width: auto;
+    padding: var(--sp-5) var(--sp-5) var(--sp-7);
+    border-top: 1px solid var(--border);
+    border-left: none;
+  }
+}

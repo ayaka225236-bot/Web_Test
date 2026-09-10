@@ -18,13 +18,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * 把 data/layout.ts 的版式参数注入成 CSS 变量，
- * 这样改一个数字就能调整内容宽度与正文行高，不用碰 CSS。
+ * 把 data/layout.ts 的参数注入成 CSS 变量，
+ * 这样改一个数字就能调整卡片宽度、右栏宽度与正文行高，不用碰 CSS。
  */
 const layoutVars = {
+  "--card-width": `${layout.cardWidth}px`,
+  "--rail-width": `${layout.railWidth}px`,
+  "--inner-gap": `${layout.innerGap}px`,
   "--content-width": `${layout.contentWidth}px`,
-  "--prose-width": `${layout.proseWidth}px`,
   "--lh-body": `${layout.lineHeight}`,
+  /* 正文不再单独限制行宽，跟随卡片内正文列的实际宽度 */
+  "--prose-width": "100%",
 } as React.CSSProperties;
 
 export default function RootLayout({

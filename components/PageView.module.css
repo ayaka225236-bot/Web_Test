@@ -1,45 +1,54 @@
 /* ============================================================
-   单栏通栏内容区
+   内容卡片：左正文 + 右导航栏
    ------------------------------------------------------------
-   卡片本身占满可用宽度（"放大中间长条"），
-   只有正文段落限制行宽，避免一行过长影响阅读。
+   卡片宽度由 data/layout.ts 的 cardWidth 控制（--card-width）。
+   正文列用 minmax(0, 1fr)，因此**行宽自动适配卡片内剩余空间**，
+   不再有单独的正文宽度上限。
    ============================================================ */
 
 .main {
   display: flex;
-  padding: var(--sp-7) clamp(16px, 3.2vw, 56px) var(--sp-9);
+  padding: var(--sp-7) clamp(16px, 3vw, 48px) var(--sp-9);
   justify-content: center;
 }
 
-.article {
+.card {
+  display: grid;
   width: 100%;
-  max-width: 1440px;
-  padding: var(--sp-9) clamp(20px, 4vw, 64px) var(--sp-9);
+  max-width: var(--card-width);
+  /* 让右侧栏贴到卡片右上角时圆角不被切掉 */
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-soft);
+  grid-template-columns: minmax(0, 1fr) var(--rail-width);
+  align-items: start;
 }
 
-.inner {
-  width: 100%;
-  max-width: var(--prose-width);
-  margin: 0 auto;
+.article {
+  min-width: 0;
+  padding: var(--sp-8) clamp(20px, 3vw, 40px) var(--sp-9);
 }
 
-/* 图片位置可以比正文行宽更宽 */
 .content {
   display: flow-root;
 }
 
-/* 图库、卡片网格这类块允许突破正文行宽，用满卡片宽度 */
-.content > :global(*) {
-  max-width: none;
+/* ---------- 窄屏：右栏移到正文下方 ---------- */
+@media (max-width: 1000px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 760px) {
   .main {
     padding: var(--sp-5) 14px var(--sp-8);
+  }
+
+  .card {
+    border-radius: var(--radius-md);
   }
 
   .article {

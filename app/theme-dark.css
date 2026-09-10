@@ -12,6 +12,7 @@ body:has(#theme-toggle:checked) {
   --surface: #131b2c;
   --surface-soft: #1a2338;
   --surface-muted: #1f2a41;
+  --rail-bg: #101728;
   --border: #26324b;
   --border-strong: #3a4a68;
 
@@ -37,6 +38,7 @@ body:has(#theme-toggle:checked) {
     --surface: #131b2c;
     --surface-soft: #1a2338;
     --surface-muted: #1f2a41;
+    --rail-bg: #101728;
     --border: #26324b;
     --border-strong: #3a4a68;
 
