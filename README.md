@@ -28,6 +28,9 @@ npm run start
 >
 > 如果报缓存目录 `EPERM`（系统缓存目录不可写），改用项目内缓存：
 > `npm install --cache .npm-cache`（`.npm-cache/` 已被 `.gitignore` 忽略）。
+>
+> Windows PowerShell 下若提示 `npm` 无法加载脚本（执行策略限制），
+> 把命令里的 `npm` 换成 `npm.cmd` 即可。
 
 ---
 
