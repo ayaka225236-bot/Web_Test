@@ -21,7 +21,7 @@
 }
 
 .warn {
-  border-left-color: #f59e0b;
-  background: #fffbeb;
-  color: #92400e;
+  border-left-color: var(--warn-accent);
+  background: var(--warn-bg);
+  color: var(--warn-fg);
 }

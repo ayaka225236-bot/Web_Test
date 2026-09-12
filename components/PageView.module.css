@@ -26,7 +26,11 @@
   padding: var(--sp-8) clamp(20px, 3vw, 40px) var(--sp-9);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--surface);
+  /* 用 --card-surface 而非 --surface：
+     默认两者相同，启用整页背景图后由 app/wiki.css 改成半透明 */
+  background: var(--card-surface);
+  /* 配合半透明底色的毛玻璃效果，避免背景图纹理穿透文字影响阅读 */
+  backdrop-filter: blur(6px);
   box-shadow: var(--shadow-soft);
 }
 

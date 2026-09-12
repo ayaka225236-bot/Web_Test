@@ -11,6 +11,9 @@
   --surface: #ffffff;
   --surface-soft: #f5f8fd;
   --surface-muted: #eaf0f9;
+  /* 内容卡片与右栏的底色。默认与 --surface 完全相同（不透明）；
+     app/wiki.css 里启用整页背景图时会把它改成半透明，让背景图透出来。 */
+  --card-surface: var(--surface);
   --border: #e2e8f2;
   --border-strong: #c9d5e6;
 
@@ -22,6 +25,28 @@
   --brand-strong: #1e3a8a;
   --brand-soft: #e8eefc;
   --brand-line: #c3d3f7;
+
+  /* 警告样式（note / prose 块的 tone: "warn"）。
+     必须走变量，否则暗色主题下会显示成一块亮色，很刺眼。 */
+  --warn-accent: #f59e0b;
+  --warn-bg: #fffbeb;
+  --warn-fg: #92400e;
+
+  /* 顶栏与页脚这两条栏的颜色。
+     浅色模式下它们用普通配色（--surface + --text）；
+     暗色模式下只覆盖这一组，让这两条变深蓝，其余部分保持和浅色完全一致。 */
+  --bar-bg: color-mix(in srgb, var(--surface) 60%, transparent); /* 顶栏：半透明 + 毛玻璃 */
+  --bar-bg-solid: var(--surface);                                /* 页脚：不透明 */
+  --bar-border: var(--border);
+  --bar-fg: var(--text);
+  --bar-fg-soft: var(--text-soft);
+  --bar-fg-muted: var(--text-muted);
+  --bar-input-bg: var(--surface);
+  --bar-input-border: var(--border-strong);
+  --bar-input-fg: var(--text);
+  --bar-input-placeholder: var(--text-muted);
+  --bar-button-bg: var(--brand);
+  --bar-button-fg: #ffffff;
 
   /* ---------- 字体 ---------- */
   --font-sans: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei",

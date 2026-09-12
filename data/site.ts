@@ -46,4 +46,4 @@ export const footerLinks: { title: string; items: { label: string; href: string 
  * 顶部搜索框的占位文字。
  * 注意：搜索功能本身还没做，这里只渲染一个静态输入框（见 README 的"前端待补"一节）。
  */
-export const searchPlaceholder = "搜索本站条目…";
+export const searchPlaceholder = "搜索功能待开发…";

@@ -7,10 +7,37 @@
 
 body {
   min-height: 100vh;
-  background: var(--bg);
+  background-color: var(--bg);              /* 兜底底色，图没加载出来时用 */
+  background-image: url("/images/pixel_2_output.png");
+  background-size: cover;                   /* 等比缩放铺满，可能裁掉边缘 */
+  background-position: center;              /* 居中 */
+  background-repeat: no-repeat;
+  background-attachment: fixed;             /* 滚动时背景不动（视差效果） */
+}
+
+/* ============================================================
+   卡片半透明：只在启用整页背景图时需要
+   ------------------------------------------------------------
+   注意：这里**不能**写 `.article { ... }` 或 `:global(.article)`。
+
+   原因：`.article` 定义在 components/PageView.module.css 里，是 CSS Module，
+   编译后类名会被哈希改写成 `PageView_article__xxxx`
+   （`.rail` 同理，变成 `WikiRail_rail__xxxx`）。
+   本文件是普通 CSS（app/wiki.css，由 layout.tsx 直接 import），
+   不做哈希处理，所以写 `.article` 匹配不到元素；
+   而 `:global()` 是 CSS Module 的语法，在普通 CSS 里是无效伪类，整条规则会被丢弃。
+
+   正确做法：改**变量**。--card-surface 默认等于 --surface（不透明），
+   组件里用的是 var(--card-surface)，在这里覆盖它的值即可生效。
+
+   不想要这个效果时，把下面这行删掉或注释掉即可恢复不透明。
+   ============================================================ */
+:root {
+  --card-surface: color-mix(in srgb, var(--surface) 70%, transparent);
 }
 
 .skipLink:focus-visible {
   outline: 2px solid #ffffff;
   outline-offset: -4px;
 }
+

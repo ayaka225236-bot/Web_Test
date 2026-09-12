@@ -14,7 +14,9 @@
   gap: var(--sp-5);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--surface);
+  /* 同 PageView.module.css：走 --card-surface，便于整页背景图下变半透明 */
+  background: var(--card-surface);
+  backdrop-filter: blur(6px);
   box-shadow: var(--shadow-soft);
 }
 

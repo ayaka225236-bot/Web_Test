@@ -1,7 +1,11 @@
+/* 页脚。颜色走 --bar-* 变量（见 app/theme.css 与 app/theme-dark.css），
+   与顶栏共用同一组，切暗色时这两条栏一起变。 */
+
 .footer {
   margin-top: var(--sp-9);
-  border-top: 1px solid var(--border);
-  background: var(--surface);
+  border-top: 1px solid var(--bar-border);
+  background: var(--bar-bg-solid);
+  color: var(--bar-fg);
 }
 
 .inner {
@@ -22,11 +26,12 @@
   margin: 0 0 var(--sp-2);
   font-size: var(--fs-body);
   font-weight: 700;
+  color: var(--bar-fg);
 }
 
 .desc {
   margin: 0 0 var(--sp-3);
-  color: var(--text-soft);
+  color: var(--bar-fg-soft);
   font-size: var(--fs-small);
   line-height: 1.8;
 }
@@ -36,7 +41,7 @@
   margin: 0;
   flex-wrap: wrap;
   gap: var(--sp-2);
-  color: var(--text-muted);
+  color: var(--bar-fg-muted);
   font-size: var(--fs-tiny);
 }
 
@@ -53,7 +58,7 @@
 
 .columnTitle {
   margin: 0 0 var(--sp-3);
-  color: var(--text-muted);
+  color: var(--bar-fg-muted);
   font-size: var(--fs-tiny);
   font-weight: 700;
   letter-spacing: var(--ls-wide);
@@ -68,24 +73,25 @@
 .columnLink {
   display: block;
   padding: 4px 0;
-  color: var(--text-soft);
+  color: var(--bar-fg-soft);
   font-size: var(--fs-small);
   text-decoration: none;
 }
 
 .columnLink:hover {
-  color: var(--brand);
+  color: var(--bar-fg);
+  text-decoration: underline;
 }
 
 .bottom {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--bar-border);
 }
 
 .copy {
   max-width: var(--content-width);
   margin: 0 auto;
   padding: var(--sp-4) var(--sp-6);
-  color: var(--text-muted);
+  color: var(--bar-fg-muted);
   font-size: var(--fs-tiny);
 }
 

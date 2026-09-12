@@ -15,9 +15,10 @@ export interface LayoutConfig {
   lineHeight: number;
 }
 
+//卡片高度由data/pages.ts 的 blocks决定
 export const layout: LayoutConfig = {
   // 通栏卡片按需求缩小约 20%（原先 1440px），正文宽度自动适配卡片内剩余空间
-  cardWidth: 1152,
+  cardWidth: 1248,
   railWidth: 224,
   innerGap: 32,
   contentWidth: 1480,
